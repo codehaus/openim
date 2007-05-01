@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<map>
+  <entry>
+    <string>al@localhost::vcard-temp:vcard</string>
+    <string>&lt;vCard xmlns=&apos;vcard-temp&apos; prodid=&apos;-//HandGen//NONSGML vGen v1.0//EN&apos; version=&apos;2.0&apos;&gt;
+&lt;FN xmlns=&apos;vcard-temp&apos;&gt;Al&lt;/FN&gt;
+&lt;/vCard&gt;</string>
+  </entry>
+  <entry>
+    <string>bill@localhost::vcard-temp:vcard</string>
+    <string>&lt;vCard xmlns=&apos;vcard-temp&apos; prodid=&apos;-//HandGen//NONSGML vGen v1.0//EN&apos; version=&apos;2.0&apos;&gt;
+&lt;FN xmlns=&apos;vcard-temp&apos;&gt;Bill&lt;/FN&gt;
+&lt;/vCard&gt;</string>
+  </entry>
+</map>

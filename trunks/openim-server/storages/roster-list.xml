@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<map>
+  <entry>
+    <string>al</string>
+    <list>
+      <item>
+        <name>bill@localhost</name>
+        <jid>bill@localhost</jid>
+        <group>General</group>
+        <subscription>both</subscription>
+      </item>
+    </list>
+  </entry>
+  <entry>
+    <string>bill</string>
+    <list>
+      <item>
+        <name>al@localhost</name>
+        <jid>al@localhost</jid>
+        <group>General</group>
+        <subscription>both</subscription>
+      </item>
+    </list>
+  </entry>
+</map>

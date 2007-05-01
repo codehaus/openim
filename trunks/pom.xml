@@ -1,0 +1,13 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.java.dev.openim</groupId>
+  <version>1.5</version>
+  <name>Openim 1.5 All</name>
+  <artifactId>openim-all</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>openim-storage</module>
+    <module>openim-users-manager</module>
+    <module>openim-server</module>
+  </modules>
+</project>
