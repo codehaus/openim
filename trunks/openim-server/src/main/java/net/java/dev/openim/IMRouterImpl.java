@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 import java.io.IOException;
 
@@ -373,7 +376,7 @@ public class IMRouterImpl
     public class RemoteDeliveryThreadPerHost
         extends Thread
     {
-        private LinkedList<TransitableAndSession> perHostRemoteDeliveryQueue;
+        private LinkedBlockingQueue<TransitableAndSession> perHostRemoteDeliveryQueue;
 
         private IMSession remoteSession = null;
 
@@ -385,25 +388,17 @@ public class IMRouterImpl
         public RemoteDeliveryThreadPerHost( String hostname )
         {
             this.hostname = hostname;
-            perHostRemoteDeliveryQueue = new LinkedList<TransitableAndSession>();
+            perHostRemoteDeliveryQueue = new LinkedBlockingQueue<TransitableAndSession>();
             currentStatus = "";
         }
 
         //----------------------------------------------------------------------
         public void enqueue( TransitableAndSession tas )
         {
-            synchronized ( perHostRemoteDeliveryQueue )
-            {
-                getLogger().debug(
-                                   "Adding tas for " + hostname + " this thread (" + this + ") isAlive: " + isAlive()
-                                       + " current status: " + currentStatus );
-                perHostRemoteDeliveryQueue.add( tas );
-            }
-            synchronized ( this )
-            {
-                notify();
-            }
-
+            getLogger().debug(
+                               "Adding tas for " + hostname + " this thread (" + this + ") isAlive: " + isAlive()
+                                   + " current status: " + currentStatus );
+            perHostRemoteDeliveryQueue.add( tas );
         }
 
         //----------------------------------------------------------------------
@@ -414,50 +409,36 @@ public class IMRouterImpl
             while ( true )
             {
                 TransitableAndSession tas = null;
-                synchronized ( perHostRemoteDeliveryQueue )
+                try
                 {
-                    tas = (TransitableAndSession) perHostRemoteDeliveryQueue.removeFirst();
-                    getLogger().debug( "Remove tas for " + hostname );
+                    tas = (TransitableAndSession) perHostRemoteDeliveryQueue.poll( 120, TimeUnit.SECONDS );
                 }
+                catch ( InterruptedException e )
+                {
+                    getLogger().debug( e.getMessage(), e );
+                }
+                getLogger().debug( "Remove tas for " + hostname );
 
                 if ( tas != null )
                 {
                     deliver( tas );
                     getLogger().debug( "Delivered tas for " + hostname );
                 }
-
-                synchronized ( this )
+                else
                 {
-                    if ( perHostRemoteDeliveryQueue.isEmpty() )
+                    synchronized ( remoteDeliveryThreadMap )
                     {
-                        try
+                        if ( perHostRemoteDeliveryQueue.isEmpty() )
                         {
-                            getLogger().debug(
-                                               "Thread (" + this + "/" + hostname + ") wait "
-                                                   + deliveryMessageQueueTimeout );
-                            wait( deliveryMessageQueueTimeout );
-                            getLogger().debug( "Thread (" + this + "/" + hostname + ") awake" );
-                        }
-                        catch ( InterruptedException e )
-                        {
-                            getLogger().warn( e.getMessage(), e );
-                        }
-                    }
+                            getLogger().debug( "Removing thread (" + this + "/" + hostname + ") from list" );
+    
+                            //RemoteDeliveryThreadPerHost remoteDeliveryThread = (RemoteDeliveryThreadPerHost) 
+                            remoteDeliveryThreadMap.remove( hostname );
+                            // should get back to pool (to implem later)
+                            break;
+                        } // if
+                    }//sync
                 }
-
-                synchronized ( remoteDeliveryThreadMap )
-                {
-                    if ( perHostRemoteDeliveryQueue.isEmpty() )
-                    {
-                        getLogger().debug( "Removing thread (" + this + "/" + hostname + ") from list" );
-
-                        //RemoteDeliveryThreadPerHost remoteDeliveryThread = (RemoteDeliveryThreadPerHost) 
-                        remoteDeliveryThreadMap.remove( hostname );
-                        // should get back to pool (to implem later)
-                        break;
-                    } // if
-                }//sync
-
             } // while true
 
             // cleanup
