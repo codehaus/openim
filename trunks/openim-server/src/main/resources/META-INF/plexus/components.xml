@@ -47,6 +47,12 @@
 				<localSSLServerPort>5270</localSSLServerPort>
 
 				<remoteServerPort>5269</remoteServerPort>
+				
+				<localClientThreadPool>20</localClientThreadPool>
+				<localSSLClientThreadPool>5</localSSLClientThreadPool>
+    			<localServerThreadPool>10</localServerThreadPool>
+    			<localSSLServerThreadPool>1</localSSLServerThreadPool>
+				
 			</configuration>
 		</component>
 

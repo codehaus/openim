@@ -29,6 +29,12 @@ public interface ServerParameters
     public List getHostNameList();
     public String getHostName();
     public int getRemoteServerPort();
+    
+    public int getLocalClientThreadPool();
+    public int getLocalSSLServerThreadPool();
+    public int getLocalServerThreadPool();
+    public int getLocalSSLClientThreadPool();
+
 }
 
 

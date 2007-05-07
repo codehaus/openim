@@ -29,13 +29,17 @@ public class ServerParametersImpl
     private List<String> hostnames;
 
     private int localClientPort;
+    private int localClientThreadPool;
 
     private int localSSLClientPort;
-
+    private int localSSLClientThreadPool;
+    
     private int localServerPort;
-
+    private int localServerThreadPool;
+    
     private int localSSLServerPort;
-
+    private int localSSLServerThreadPool;
+    
     private int remoteServerPort;
 
     //-------------------------------------------------------------------------
@@ -97,5 +101,31 @@ public class ServerParametersImpl
     {
         return remoteServerPort;
     }
+    
+    
+    //-------------------------------------------------------------------------
+    public int getLocalClientThreadPool()
+    {
+        return localClientThreadPool;
+    }
+    //-------------------------------------------------------------------------
+    public int getLocalSSLServerThreadPool()
+    {
+        return localSSLServerThreadPool;
+    }
+    //-------------------------------------------------------------------------
+    public int getLocalServerThreadPool()
+    {
+        return localServerThreadPool;
+    }
+    //-------------------------------------------------------------------------
+    public int getLocalSSLClientThreadPool()
+    {
+        return localSSLClientThreadPool;
+    }
 
+    
+    
+    
+    
 }

@@ -41,6 +41,7 @@ public class IMServerImpl
 
     // Autoconfigs
     private int listenBacklog;
+
     private String bindAddress;
 
     // -------------------------------------------------------------------------
@@ -63,23 +64,22 @@ public class IMServerImpl
 
             ServerSocketFactory factory = ServerSocketFactory.getDefault();
             ServerSocket clientServerSocket = factory.createServerSocket( serverParameters.getLocalClientPort(),
-                                                                                listenBacklog, bindTo );
-            new ConnectionManager( clientServerSocket ).start();
+                                                                          listenBacklog, bindTo );
+            new ConnectionManager( clientServerSocket, serverParameters.getLocalClientThreadPool() ).start();
             ServerSocket serverServerSocket = factory.createServerSocket( serverParameters.getLocalServerPort(),
-                                                                                listenBacklog, bindTo );
-            new ConnectionManager( serverServerSocket ).start();
-            
+                                                                          listenBacklog, bindTo );
+            new ConnectionManager( serverServerSocket, serverParameters.getLocalServerThreadPool() ).start();
+
             // java -Djavax.net.ssl.keyStore=mySrvKeystore -Djavax.net.ssl.keyStorePassword=123456 MyServer
             // keytool -keystore mySrvKeystore -keypasswd 123456 -genkey -keyalg RSA -alias mycert
             ServerSocketFactory sslfactory = SSLServerSocketFactory.getDefault();
             ServerSocket sslClientServerSocket = sslfactory.createServerSocket( serverParameters
-                                                                    .getLocalSSLClientPort(), listenBacklog, bindTo );
-            new ConnectionManager( sslClientServerSocket ).start();
-            
+                .getLocalSSLClientPort(), listenBacklog, bindTo );
+            new ConnectionManager( sslClientServerSocket, serverParameters.getLocalSSLClientThreadPool() ).start();
+
             ServerSocket sslServerServerSocket = sslfactory.createServerSocket( serverParameters
-                                                                    .getLocalSSLServerPort(), listenBacklog, bindTo );
-            new ConnectionManager( sslServerServerSocket ).start();
-            
+                .getLocalSSLServerPort(), listenBacklog, bindTo );
+            new ConnectionManager( sslServerServerSocket, serverParameters.getLocalSSLServerThreadPool() ).start();
 
             String s = "Server '" + serverParameters.getHostName() + "' initialized on" + " server2server port "
                 + serverParameters.getLocalServerPort() + " SSL-server2server port "
@@ -104,44 +104,44 @@ public class IMServerImpl
 
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
-    
+
     public class ConnectionManager
-    extends Thread
+        extends Thread
     {
 
         private ServerSocket serverSocket;
-        private int poolSize = 10;
-        
-        public ConnectionManager( ServerSocket serverSocket  )
+        private int poolSize;
+
+        public ConnectionManager( ServerSocket serverSocket, int poolSize )
         {
             this.serverSocket = serverSocket;
+            this.poolSize = poolSize;
         }
 
         public void run()
         {
-           
-            
+
             ExecutorService pool = Executors.newFixedThreadPool( poolSize );
-            try
+            for ( ;; )
             {
-                for ( ;; )
+                try
                 {
                     pool.execute( new Handler( serverSocket.accept() ) );
                 }
+                catch ( IOException ex )
+                {
+                }
             }
-            catch ( IOException ex )
-            {
-                pool.shutdown();
-            }
-     
+            //pool.shutdown();
+
         }
     }
-        
+
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
-    
+
     class Handler
-    implements Runnable
+        implements Runnable
     {
         private final Socket socket;
 
@@ -154,7 +154,8 @@ public class IMServerImpl
         {
             try
             {
-                IMConnectionHandler imConnectionHandler = (IMConnectionHandler) serviceLocator.lookup( IMConnectionHandler.class.getName(), "IMConnectionHandler" );
+                IMConnectionHandler imConnectionHandler = (IMConnectionHandler) serviceLocator
+                    .lookup( IMConnectionHandler.class.getName(), "IMConnectionHandler" );
                 imConnectionHandler.handleConnection( socket );
             }
             catch ( Exception e )
