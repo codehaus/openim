@@ -10,36 +10,31 @@
  */
 package net.java.dev.openim;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.LinkedList;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
-import java.io.IOException;
+import net.java.dev.openim.data.Account;
+import net.java.dev.openim.data.Deferrable;
+import net.java.dev.openim.data.Transitable;
+import net.java.dev.openim.data.jabber.User;
+import net.java.dev.openim.data.storage.AccountRepositoryHolder;
+import net.java.dev.openim.data.storage.DeferrableListRepositoryHolder;
+import net.java.dev.openim.log.MessageLogger;
+import net.java.dev.openim.log.MessageRecorder;
+import net.java.dev.openim.session.IMClientSession;
+import net.java.dev.openim.session.IMSession;
+import net.java.dev.openim.session.SessionsManager;
+import net.java.dev.openim.tools.JIDParser;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-
-import net.java.dev.openim.data.Account;
-import net.java.dev.openim.data.storage.AccountRepositoryHolder;
-import net.java.dev.openim.data.storage.DeferrableListRepositoryHolder;
-import net.java.dev.openim.data.Transitable;
-import net.java.dev.openim.data.Deferrable;
-import net.java.dev.openim.data.jabber.User;
-import net.java.dev.openim.tools.JIDParser;
-
-import net.java.dev.openim.log.MessageLogger;
-import net.java.dev.openim.log.MessageRecorder;
-
-import net.java.dev.openim.session.SessionsManager;
-import net.java.dev.openim.session.IMClientSession;
-import net.java.dev.openim.session.IMSession;
 
 /**
  * @version 1.5
@@ -114,7 +109,10 @@ public class IMRouterImpl
             {
                 getLogger().error( e.getMessage(), e );
             }
-            sessionMap.put( user.getNameAndRessource(), session );
+            synchronized ( sessionMap )
+            {                
+                sessionMap.put( user.getNameAndRessource(), session );
+            }
 
             try
             {
@@ -140,7 +138,10 @@ public class IMRouterImpl
                 getLogger().debug(
                                    "Unregister register session user: " + user.getJIDAndRessource() + " session id "
                                        + session.getId() );
-                sessionMap.remove( user.getNameAndRessource() );
+                synchronized ( sessionMap )
+                {                    
+                    sessionMap.remove( user.getNameAndRessource() );
+                }
                 //m_sessionMap.remove( user.getName() );
             }
         }
@@ -555,11 +556,14 @@ public class IMRouterImpl
     public void releaseSessions()
     {
         getLogger().debug( "Releasing sessions " );
-        Iterator it = sessionMap.values().iterator();
-        while ( it.hasNext() )
-        {
-            IMSession sess = (IMSession) it.next();
-            sessionsManager.release( sess );
-        } // end of while ()
+        synchronized ( sessionMap )
+        {            
+            Iterator it = sessionMap.values().iterator();
+            while ( it.hasNext() )
+            {
+                IMSession sess = (IMSession) it.next();
+                sessionsManager.release( sess );
+            } // end of while ()
+        }
     }
 }

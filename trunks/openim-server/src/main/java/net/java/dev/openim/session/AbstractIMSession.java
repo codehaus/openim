@@ -119,23 +119,32 @@ public abstract class AbstractIMSession
 
     //-------------------------------------------------------------------------
     public final void writeOutputStream( final String s )
-        throws IOException
+        //throws IOException
     {
         getLogger().debug( "Output (" + sessionId + "/" + getConnectionType() + "): " + s );
         if ( s != null && outputStreamWriter != null )
         {
             if ( !socket.isClosed() && socket.isConnected() )
             {
+                try
+                {
                 synchronized ( outputStreamWriter )
                 {
                     outputStreamWriter.write( s );
 
                     outputStreamWriter.flush();
                 }
+                }
+                catch( IOException e )
+                {
+                    getLogger().warn( "Unable to send data: " + e.getMessage() );
+                }
+                
             }
             else
             {
-                throw new IOException( "Output socket closed or not connected" );
+                getLogger().warn( "Unable to send data: Output socket closed or not connected" );
+                //throw new IOException( "Output socket closed or not connected" );
             }
         }
     }
