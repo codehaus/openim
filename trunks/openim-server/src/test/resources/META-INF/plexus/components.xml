@@ -1,0 +1,1071 @@
+<component-set>
+	<components>
+
+		<!-- ##################################################################### -->
+		<!-- IMServer -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.IMServer</role>
+			<role-hint>IMServer</role-hint>
+			<implementation>net.java.dev.openim.IMServerImpl</implementation>
+
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>					
+				</requirement>
+			</requirements>
+
+			<configuration>
+				<listenBacklog>5</listenBacklog>
+				<bindAddress></bindAddress>
+			</configuration>
+
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- ServerParameters -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.ServerParameters</role>
+			<role-hint>ServerParameters</role-hint>
+			<implementation>net.java.dev.openim.ServerParametersImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+			<configuration>
+				<hostnames>
+					<hostname>localhost</hostname>
+					<hostname>home.open-im.net</hostname>
+				</hostnames>
+
+				<localClientPort>5222</localClientPort>
+				<localSSLClientPort>5223</localSSLClientPort>
+				<localServerPort>5269</localServerPort>
+				<localSSLServerPort>5270</localSSLServerPort>
+
+				<remoteServerPort>5269</remoteServerPort>
+				
+				<localClientThreadPool>20</localClientThreadPool>
+				<localSSLClientThreadPool>5</localSSLClientThreadPool>
+    			<localServerThreadPool>10</localServerThreadPool>
+    			<localSSLServerThreadPool>1</localSSLServerThreadPool>
+				
+			</configuration>
+		</component>
+
+
+
+		<!-- ##################################################################### -->
+		<!-- IMConnectionHandler -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.IMConnectionHandler</role>
+			<role-hint>IMConnectionHandler</role-hint>
+			<implementation>net.java.dev.openim.IMConnectionHandlerImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.session.SessionsManager</role>
+					<role-hint>SessionsManager</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.IMRouter</role>
+					<role-hint>IMRouter</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.S2SConnectorManager</role>
+					<role-hint>S2SConnectorManager</role-hint>
+				</requirement>
+				
+				
+			</requirements>
+
+
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- IMPresenceHolder -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.IMPresenceHolder</role>
+			<role-hint>IMPresenceHolder</role-hint>
+			<implementation>net.java.dev.openim.IMPresenceHolderImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- IMRouter -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.IMRouter</role>
+			<role-hint>IMRouter</role-hint>
+			<implementation>net.java.dev.openim.IMRouterImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.session.SessionsManager</role>
+					<role-hint>SessionsManager</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.DeferrableListRepositoryHolder</role>
+					<role-hint>DeferrableListRepositoryHolder</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.AccountRepositoryHolder</role>
+					<role-hint>AccountRepositoryHolder</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.log.MessageLogger</role>
+					<role-hint>MessageLogger</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.log.MessageRecorder</role>
+					<role-hint>MessageRecorder</role-hint>
+				</requirement>				
+			</requirements>
+			
+			
+			<configuration>
+				<deliveryMaxRetry>3</deliveryMaxRetry>
+				<deliveryRetryDelay>500</deliveryRetryDelay>
+				<deliveryMessageQueueTimeout>3600000</deliveryMessageQueueTimeout>
+			</configuration>
+			
+		</component>
+
+
+		<!-- ##################################################################### -->
+		<!-- S2SConnectorManager -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.S2SConnectorManager</role>
+			<role-hint>S2SConnectorManager</role-hint>
+			<implementation>net.java.dev.openim.S2SConnectorManagerImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.session.SessionsManager</role>
+					<role-hint>SessionsManager</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.IMRouter</role>
+					<role-hint>IMRouter</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+
+
+		<!-- ##################################################################### -->
+		<!-- S2SConnector -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.S2SConnector</role>
+			<role-hint>S2SConnector</role-hint>
+			<implementation>net.java.dev.openim.S2SConnectorImpl</implementation>
+
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+			</requirements>
+			
+			<configuration>
+				<deliveryConnectionTimout>60000</deliveryConnectionTimout>
+			</configuration>
+			
+		</component>
+
+
+		<!-- ##################################################################### -->
+		<!-- SubscriptionManager -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.SubscriptionManager</role>
+			<role-hint>SubscriptionManager</role-hint>
+			<implementation>net.java.dev.openim.SubscriptionManagerImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.IMPresenceHolder</role>
+					<role-hint>IMPresenceHolder</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.RosterListRepositoryHolder</role>
+					<role-hint>RosterListRepositoryHolder</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+			</requirements>
+			
+		</component>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- SessionsManager -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.session.SessionsManager</role>
+			<role-hint>SessionsManager</role-hint>
+			<implementation>net.java.dev.openim.session.SessionsManagerImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- IMClientSession -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.session.IMClientSession</role>
+			<role-hint>IMClientSession</role-hint>
+			<implementation>net.java.dev.openim.session.IMClientSessionImpl</implementation>
+
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.IMPresenceHolder</role>
+					<role-hint>IMPresenceHolder</role-hint>
+				</requirement>
+			</requirements>
+			
+			<configuration>
+				<defaultEncoding>UTF-8</defaultEncoding>
+			</configuration>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- IMServerSession -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.session.IMServerSession</role>
+			<role-hint>IMServerSession</role-hint>
+			<implementation>net.java.dev.openim.session.IMServerSessionImpl</implementation>
+
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+			</requirements>
+			
+			<configuration>
+				<defaultEncoding>UTF-8</defaultEncoding>
+			</configuration>
+		</component>
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- User -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.data.jabber.User</role>
+			<role-hint>User</role-hint>
+			<implementation>net.java.dev.openim.data.jabber.UserImpl</implementation>
+
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.AccountRepositoryHolder</role>
+					<role-hint>AccountRepositoryHolder</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.RosterListRepositoryHolder</role>
+					<role-hint>RosterListRepositoryHolder</role-hint>
+				</requirement>
+			</requirements>
+			
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- UsersManager -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.data.UsersManager</role>
+			<role-hint>UsersManager</role-hint>
+			<implementation>net.java.dev.openim.data.UsersManagerImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- MessageLogger -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.log.MessageLogger</role>
+			<role-hint>MessageLogger</role-hint>
+			<implementation>net.java.dev.openim.log.MessageLoggerImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- MessageRecorder -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.log.MessageRecorder</role>
+			<role-hint>MessageRecorder</role-hint>
+			<implementation>net.java.dev.openim.log.MessageRecorderImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+		</component>
+
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- Storage part -->
+		<!-- ##################################################################### -->
+
+		<!-- ##################################################################### -->
+		<!-- DeferrableListRepositoryHolder -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.data.storage.DeferrableListRepositoryHolder</role>
+			<role-hint>DeferrableListRepositoryHolder</role-hint>
+			<implementation>net.java.dev.openim.data.storage.DeferrableListRepositoryHolderImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+			<configuration>
+				<encoding>UTF-8</encoding>
+				<filename>./target/storages/deferrable-list.xml</filename>
+			</configuration>			
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- PrivateRepositoryHolder -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.data.storage.PrivateRepositoryHolder</role>
+			<role-hint>PrivateRepositoryHolder</role-hint>
+			<implementation>net.java.dev.openim.data.storage.PrivateRepositoryHolderImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+			<configuration>
+				<encoding>UTF-8</encoding>
+				<filename>./target/storages/private.xml</filename>
+			</configuration>			
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- RosterListRepositoryHolder -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.data.storage.RosterListRepositoryHolder</role>
+			<role-hint>RosterListRepositoryHolder</role-hint>
+			<implementation>net.java.dev.openim.data.storage.RosterListRepositoryHolderImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+			<configuration>
+				<encoding>UTF-8</encoding>
+				<filename>./target/storages/roster-list.xml</filename>
+			</configuration>			
+		</component>
+
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- Users Manager part -->
+		<!-- ##################################################################### -->
+
+		<!-- ##################################################################### -->
+		<!-- AccountRepositoryHolder -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.data.storage.AccountRepositoryHolder</role>
+			<role-hint>AccountRepositoryHolder</role-hint>
+			<implementation>net.java.dev.openim.data.storage.AccountRepositoryHolderImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+			<configuration>
+				<filename>./target/storages/accounts.xml</filename>
+				<regexpSearch>false</regexpSearch>
+			</configuration>			
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- AccountRepositoryHolder -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>net.java.dev.openim.data.Account</role>
+			<role-hint>Account</role-hint>
+			<implementation>net.java.dev.openim.data.AccountImpl</implementation>
+
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+
+		</component>
+
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- Jabber Stream part -->
+		<!-- ##################################################################### -->
+
+
+		<!-- ##################################################################### -->
+		<!-- Streams -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>http://etherx.jabber.org/streams:stream</role>
+			<implementation>net.java.dev.openim.jabber.StreamsImpl</implementation>
+
+			<!-- per-lookup cause Dialback requirements are perlookup -->
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+
+			</requirements>
+						
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- Error -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>http://etherx.jabber.org/streams:error</role>
+			<implementation>net.java.dev.openim.jabber.ErrorImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- Iq -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:iq</role>
+			<implementation>net.java.dev.openim.jabber.server.IqImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			<requirements>
+			</requirements>
+		</component>
+		
+		
+		
+		<!-- ##################################################################### -->
+		<!-- Message -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:message</role>
+			<implementation>net.java.dev.openim.jabber.client.MessageImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+		</component>
+		
+		<!-- ##################################################################### -->
+		<!-- Presence -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:presence</role>
+			<implementation>net.java.dev.openim.jabber.client.PresenceImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.IMPresenceHolder</role>
+					<role-hint>IMPresenceHolder</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.SubscriptionManager</role>
+					<role-hint>SubscriptionManager</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+				
+				
+		<!-- ##################################################################### -->
+		<!-- Priority -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:priority</role>
+			<implementation>net.java.dev.openim.jabber.client.PriorityImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>				
+				
+		<!-- ##################################################################### -->
+		<!-- Show -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:show</role>
+			<implementation>net.java.dev.openim.jabber.client.ShowImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>				
+
+		<!-- ##################################################################### -->
+		<!-- Status -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:status</role>
+			<implementation>net.java.dev.openim.jabber.client.StatusImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>				
+
+		<!-- ##################################################################### -->
+		<!-- Subject -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:subject</role>
+			<implementation>net.java.dev.openim.jabber.client.SubjectImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>				
+
+		<!-- ##################################################################### -->
+		<!-- Body -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:body</role>
+			<implementation>net.java.dev.openim.jabber.client.BodyImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+		
+
+		<!-- ##################################################################### -->
+		<!-- Thread -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:client:thread</role>
+			<implementation>net.java.dev.openim.jabber.client.ThreadImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>				
+
+
+
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- auth.Query -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:auth:query</role>
+			<implementation>net.java.dev.openim.jabber.iq.auth.QueryImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.UsersManager</role>
+					<role-hint>UsersManager</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.AccountRepositoryHolder</role>
+					<role-hint>AccountRepositoryHolder</role-hint>
+				</requirement>
+				
+			</requirements>
+			
+		</component>				
+
+		<!-- ##################################################################### -->
+		<!-- Digest -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:auth:digest</role>
+			<implementation>net.java.dev.openim.jabber.iq.auth.DigestImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+					
+		<!-- ##################################################################### -->
+		<!-- Password -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:auth:password</role>
+			<implementation>net.java.dev.openim.jabber.iq.auth.PasswordImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>				
+					
+		<!-- ##################################################################### -->
+		<!-- Resource -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:auth:resource</role>
+			<implementation>net.java.dev.openim.jabber.iq.auth.ResourceImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+		
+		<!-- ##################################################################### -->
+		<!-- Username -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:auth:username</role>
+			<implementation>net.java.dev.openim.jabber.iq.auth.UsernameImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- browse.Query -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:browse:query</role>
+			<implementation>net.java.dev.openim.jabber.iq.browse.QueryImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+
+
+		<!-- ##################################################################### -->
+		<!-- browse.Query -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:search:query</role>
+			<implementation>net.java.dev.openim.jabber.iq.search.QueryImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.AccountRepositoryHolder</role>
+					<role-hint>AccountRepositoryHolder</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- oob.Query -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:oob:query</role>
+			<implementation>net.java.dev.openim.jabber.iq.oob.QueryImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- jprivate.Query -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:private:query</role>
+			<implementation>net.java.dev.openim.jabber.iq.jprivate.QueryImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.PrivateRepositoryHolder</role>
+					<role-hint>PrivateRepositoryHolder</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+		
+		<!-- ##################################################################### -->
+		<!-- vcardtemp.VCard -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>vcard-temp:vCard</role>
+			<implementation>net.java.dev.openim.jabber.iq.vcardtemp.VCardImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.PrivateRepositoryHolder</role>
+					<role-hint>PrivateRepositoryHolder</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+
+				
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- register.Query -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:register:query</role>
+			<implementation>net.java.dev.openim.jabber.iq.register.QueryImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.ServerParameters</role>
+					<role-hint>ServerParameters</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.UsersManager</role>
+					<role-hint>UsersManager</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.data.storage.AccountRepositoryHolder</role>
+					<role-hint>AccountRepositoryHolder</role-hint>
+				</requirement>
+				
+			</requirements>
+
+		</component>				
+		
+		<!-- ##################################################################### -->
+		<!-- Username -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:register:username</role>
+			<implementation>net.java.dev.openim.jabber.iq.register.UsernameImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+		
+		<!-- ##################################################################### -->
+		<!-- Password -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:register:password</role>
+			<implementation>net.java.dev.openim.jabber.iq.register.PasswordImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+		
+		<!-- ##################################################################### -->
+		<!-- Remove -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:register:remove</role>
+			<implementation>net.java.dev.openim.jabber.iq.register.RemoveImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+				
+
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- roster.Query -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:roster:query</role>
+			<implementation>net.java.dev.openim.jabber.iq.roster.QueryImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.IMPresenceHolder</role>
+					<role-hint>IMPresenceHolder</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.SubscriptionManager</role>
+					<role-hint>SubscriptionManager</role-hint>
+				</requirement>
+
+			</requirements>
+
+		</component>				
+
+		<!-- ##################################################################### -->
+		<!-- roster.Item -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:roster:item</role>
+			<implementation>net.java.dev.openim.jabber.iq.roster.ItemImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+		</component>				
+
+
+
+		<!-- ##################################################################### -->
+		<!-- roster.Item -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:iq:roster:group</role>
+			<implementation>net.java.dev.openim.jabber.iq.roster.GroupImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+		</component>
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- server.Iq -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:iq</role>
+			<implementation>net.java.dev.openim.jabber.server.IqImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+		</component>
+		
+		<!-- ##################################################################### -->
+		<!-- server.Presence -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:presence</role>
+			<implementation>net.java.dev.openim.jabber.server.PresenceImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+			
+			<requirements>
+				<requirement>
+					<role>net.java.dev.openim.IMPresenceHolder</role>
+					<role-hint>IMPresenceHolder</role-hint>
+				</requirement>
+				<requirement>
+					<role>net.java.dev.openim.SubscriptionManager</role>
+					<role-hint>SubscriptionManager</role-hint>
+				</requirement>
+			</requirements>
+		</component>				
+
+		<!-- ##################################################################### -->
+		<!-- server.Message -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:message</role>
+			<implementation>net.java.dev.openim.jabber.server.MessageImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>				
+
+		<!-- ##################################################################### -->
+		<!-- server.Show -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:show</role>
+			<implementation>net.java.dev.openim.jabber.server.ShowImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- server.Priority -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:priority</role>
+			<implementation>net.java.dev.openim.jabber.server.PriorityImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- server.Status -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:status</role>
+			<implementation>net.java.dev.openim.jabber.server.StatusImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- server.Error -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:error</role>
+			<implementation>net.java.dev.openim.jabber.server.ErrorImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- server.Subject -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:subject</role>
+			<implementation>net.java.dev.openim.jabber.server.SubjectImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- server.Body -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:body</role>
+			<implementation>net.java.dev.openim.jabber.server.BodyImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- server.Thread -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:thread</role>
+			<implementation>net.java.dev.openim.jabber.server.ThreadImpl</implementation>
+
+			<instantiation-strategy>singleton</instantiation-strategy>
+		</component>
+
+
+
+
+
+		<!-- ##################################################################### -->
+		<!-- server.dialback.Result -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:dialback:result</role>
+			<implementation>net.java.dev.openim.jabber.server.dialback.ResultImpl</implementation>
+
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+		</component>
+
+		<!-- ##################################################################### -->
+		<!-- server.dialback.Verify -->
+		<!-- ##################################################################### -->
+		<component>
+			<role>jabber:server:dialback:verify</role>
+			<implementation>net.java.dev.openim.jabber.server.dialback.VerifyImpl</implementation>
+
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			
+		</component>
+
+
+
+
+		
+	</components>
+	
+	
+	
+
+</component-set>
+
