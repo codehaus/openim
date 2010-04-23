@@ -59,9 +59,9 @@
 
    <!-- PomStrap -->
     <dependency>
-      <groupId>pomstrap</groupId>
+      <groupId>org.tigris.pomstrap</groupId>
       <artifactId>pomstrap</artifactId>
-      <version>1.0.7</version>
+      <version>1.0.14</version>
       <scope>compile</scope>
     </dependency>
 
